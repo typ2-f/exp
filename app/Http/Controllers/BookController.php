@@ -55,15 +55,23 @@ class BookController extends Controller
     public function edit(int $id)
     {
         $book = Book::find($id);
+        $user_id = Auth::user()->id;
+        if ($book->user_id !== $user_id) {
+            return false;
+        }
         return view('books/edit',compact('book'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, int $id)
     {
-        //
+        $book = Book::find($id);
+        $book->title = $request->title;
+        $book->isbn = $request->isbn;
+        $book->save();
+        return redirect()->route('books.index');
     }
 
     /**

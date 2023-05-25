@@ -1,5 +1,7 @@
 <?php
 
+
+use App\Http\Controllers\IndexController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BookController;
@@ -27,9 +29,11 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+
+    Route::get('/home', [IndexController::class, 'index']);
     Route::resource('/books', BookController::class);
     Route::resource('/storages', StorageController::class);
-    Route::get('/storages/{id}', [BookInStorageController::class, 'index']);
+    Route::get('/storages/{storage}/books', [BookInStorageController::class, 'index']);
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

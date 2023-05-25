@@ -14,8 +14,8 @@ class StorageController extends Controller
      */
     public function index()
     {
-        $books = Storage::where('user_id', Auth::user()->id)->get();
-        return view('storages/index', $books);
+        $storages = Storage::where('user_id', Auth::user()->id)->get();
+        return view('storages/index', compact('storages'));
     }
 
     /**
@@ -23,7 +23,7 @@ class StorageController extends Controller
      */
     public function create()
     {
-        return view('books/create');
+        return view('storages/create');
     }
 
     /**
@@ -31,23 +31,31 @@ class StorageController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user_id = Auth::user()->id;
+        Storage::create([
+            'user_id' => $user_id,
+            'name' => $request->name,
+            'address' => $request->address,
+        ]);
+        return redirect()->route('storages.index');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(int $id)
     {
-        return view('storages/show', $id);
+        $storage = Storage::find($id);
+        return view('storages/show', compact('storage'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(int $id)
     {
-        return view('storage/edit', $id);
+        $storage = Storage::find($id);
+        return view('storage/edit', compact('storage'));
     }
 
     /**
@@ -61,8 +69,9 @@ class StorageController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(int $id)
     {
-        //
+        Storage::destroy($id);
+        return redirect()->route('storages.index');
     }
 }
