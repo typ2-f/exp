@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Collection;
 use App\Http\Controllers\Controller;
 use App\Models\Book;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +15,7 @@ class BookController extends Controller
      */
     public function index()
     {
-        $books = Book::where('user_id', Auth::user()->id)->get();
+        $books = Auth::user()->books;
         return view('books/index', compact('books'));
     }
 
@@ -46,6 +47,8 @@ class BookController extends Controller
     public function show(int $id)
     {
         $book = Book::find($id);
+        $user = $book->user;
+        $result = $book->push($user);
         return view('books/show', compact('book'));
     }
 
