@@ -9,6 +9,7 @@ class Storage extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'user_id',
         'name',
         'address',
     ];

@@ -8,6 +8,8 @@ use App\Models\Book;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
+use App\Http\Controllers\BookInfoController;
+
 class BookController extends Controller
 {
     /**
@@ -15,7 +17,8 @@ class BookController extends Controller
      */
     public function index()
     {
-        $books = Auth::user()->books;
+        $user_id = Auth::user()->id;
+        $books = Book::with('bookInfo')->where('user_id', $user_id)->get();
         return view('books/index', compact('books'));
     }
 
@@ -33,10 +36,12 @@ class BookController extends Controller
     public function store(Request $request)
     {
         $user_id = Auth::user()->id;
+        $book_info_id = BookInfoController::store($request);
         Book::create([
             'user_id' => $user_id,
-            'isbn' => $request->isbn,
-            'title' => $request->title,
+            'storage_id' => $request->storage_id,
+            'book_info_id' => $book_info_id,
+            'status' => $request->status
         ]);
         return redirect()->route('books.index');
     }
@@ -46,9 +51,7 @@ class BookController extends Controller
      */
     public function show(int $id)
     {
-        $book = Book::find($id);
-        $user = $book->user;
-        $result = $book->push($user);
+        $book = Book::with('bookInfo')->find($id);
         return view('books/show', compact('book'));
     }
 
@@ -57,12 +60,12 @@ class BookController extends Controller
      */
     public function edit(int $id)
     {
-        $book = Book::find($id);
+        $book = Book::with('bookInfo')->find($id);
         $user_id = Auth::user()->id;
         if ($book->user_id !== $user_id) {
-            return false;
+            return back()->with('alert', '不正なリクエストです');
         }
-        return view('books/edit',compact('book'));
+        return view('books/edit', compact('book'));
     }
 
     /**
@@ -71,8 +74,14 @@ class BookController extends Controller
     public function update(Request $request, int $id)
     {
         $book = Book::find($id);
-        $book->title = $request->title;
-        $book->isbn = $request->isbn;
+        $book_info_id = $book->book_info_id;
+        $book_info = BookInfoController::update($request, $book_info_id);
+
+        if ($book_info === false) {
+            return back()->with('alert', 'ISBNコードから取得したデータは書換不可です');
+        }
+
+        $book->status = $request->status;
         $book->save();
         return redirect()->route('books.index');
     }

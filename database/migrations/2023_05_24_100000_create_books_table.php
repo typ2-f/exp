@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('storages', function (Blueprint $table) {
+        Schema::create('books', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('storage_id')->nullable()->constrained();
             $table->foreignId('user_id')->constrained();
-            $table->string('name');
-            $table->string('address');
-            $table->timestamp('created_at');
-            $table->timestamp('updated_at');
+            $table->foreignId('book_info_id')->constrained();
+            $table->unsignedTinyInteger('status')->nullable();
+            $table->timestamps();
+
         });
     }
 
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('storages');
+        Schema::dropIfExists('books');
     }
 };

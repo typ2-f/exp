@@ -10,8 +10,9 @@ class Book extends Model
     use HasFactory;
     protected $fillable = [
         'user_id',
-        'isbn',
-        'title',
+        'storage_id',
+        'book_info_id',
+        'status'
     ];
 
     //リレーション
@@ -22,6 +23,10 @@ class Book extends Model
     public function storage()
     {
         return $this->belongsTo(Storage::class);
+    }
+    public function bookInfo()
+    {
+        return $this->belongsTo(BookInfo::class);
     }
     public function storageBookLogs()
     {

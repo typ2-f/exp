@@ -55,7 +55,7 @@ class StorageController extends Controller
     public function edit(int $id)
     {
         $storage = Storage::find($id);
-        return view('storage/edit', compact('storage'));
+        return view('storages/edit', compact('storage'));
     }
 
     /**
@@ -63,7 +63,11 @@ class StorageController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $storage = Storage::find($id);
+        $storage->name = $request->name;
+        $storage->address = $request->address;
+        $storage->save();
+        return redirect()->route('storages.index');
     }
 
     /**

@@ -1,4 +1,4 @@
-<h1>create</h1>
+<h1>storages.create</h1>
 <form action='/storages' method="post">
   @csrf
   <input type="text" name="name" id="name" placeholder="name">
