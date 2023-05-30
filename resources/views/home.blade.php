@@ -1,3 +1,6 @@
 <h1>home</h1>
-<a href="/books">books</a>
-<a href="/storages">storages</a>
+<ul>
+    <li><a href="/books">books</a></li>
+    <li><a href="/storages">storages</a></li>
+    <li><a href="/isbn">isbn</a></li>
+</ul>
